@@ -30,7 +30,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Robaa2168/Cscripts.git
+        git remote set-url origin https://x-access-token:${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}@github.com/Robaa2168/Cscripts.git
 
         files_changed=${{ steps.check_changes.outputs.files_changed }}
         
@@ -50,3 +50,5 @@ jobs:
         else
           echo "No relevant files changed. Skipping version update."
         fi
+
+
