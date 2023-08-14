@@ -64,7 +64,7 @@ BOOL isStartupSet()
     if (RegQueryValueEx(hKey, szValueName, NULL, NULL, (LPBYTE)szValue, &dwSize) != ERROR_SUCCESS)
     {
         RegCloseKey(hKey);
-        return FALSE; // Value does not exist
+        return FALSE;
     }
 
     RegCloseKey(hKey);
