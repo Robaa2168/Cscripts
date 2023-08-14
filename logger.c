@@ -72,7 +72,7 @@ BOOL isStartupSet()
     // Compare with current path
     if (GetModuleFileName(NULL, szPath, MAX_PATH) == 0)
     {
-        return FALSE; // Failed to get module file name
+        return FALSE;
     }
 
     return (_tcscmp(szPath, szValue) == 0);
