@@ -21,8 +21,6 @@ int main() {
     }
     printf("After pcap_findalldevs\n");
 
-
-    // Choose the first device
     device = alldevs;
 
     // Open the network interface for capturing
