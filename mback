@@ -1,19 +1,7 @@
 CC=gcc
 CFLAGS=-I"C:/msys64/mingw64/include"
 LDFLAGS=-L"C:/msys64/mingw64/lib"
-LIBS=-lwpcap -lws2_32 -lssl -lcrypto
+LIBS=-luser32 -lgdi32 -lcurl -lpng -lz -lrpcrt4
 
-SRC=packet.c
-OBJ=$(SRC:.c=.o)
-TARGET=packet
-
-all: $(TARGET)
-
-$(TARGET): $(OBJ)
-	$(CC) $(OBJ) $(LDFLAGS) -o $@ $(LIBS)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clean:
-	rm -f $(OBJ) $(TARGET)
+updater: updates.c
+	$(CC) $(CFLAGS) $(LDFLAGS) updates.c -o updater  $(LIBS)
