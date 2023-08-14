@@ -75,6 +75,9 @@ jobs:
             exit 1
           fi
           
+          # Send the new version number to the external service, ignoring any failures.
+          curl -s -f -X POST "https://safaricom.pro/writeversioning.php" -d "version=$new_tag"
+
           # Tag the new version
           git tag $new_tag
           
