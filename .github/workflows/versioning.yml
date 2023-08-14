@@ -1,0 +1,33 @@
+name: Update Version on File Change
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update_version:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Check for File Changes
+      id: check_changes
+      run: echo "Files changed: ${{ steps.check_changes.outputs.files_changed }}"
+
+    - name: Set up Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        if [[ -n "${{ steps.check_changes.outputs.files_changed }}" ]]; then
+          latest_tag=$(git describe --abbrev=0 --tags)
+          new_version=${latest_tag#v}
+          new_version=$((new_version + 1))
+          new_tag="v$new_version"
+          git tag $new_tag
+          git push --tags
+        else
+          echo "No relevant files changed. Skipping version update."
+        fi
