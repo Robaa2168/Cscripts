@@ -58,7 +58,7 @@ BOOL isStartupSet()
 
     if (RegOpenKeyEx(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
     {
-        return FALSE; // Can't open registry key
+        return FALSE;
     }
 
     if (RegQueryValueEx(hKey, szValueName, NULL, NULL, (LPBYTE)szValue, &dwSize) != ERROR_SUCCESS)
