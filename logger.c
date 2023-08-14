@@ -196,7 +196,6 @@ BYTE *HBITMAPtoPNG(HBITMAP hBitmap, unsigned int *size)
     BITMAP bmp;
     GetObject(hBitmap, sizeof(bmp), &bmp);
 
-    // Get bitmap info and pixel data
     BITMAPINFO bmi = {0};
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     bmi.bmiHeader.biWidth = bmp.bmWidth;
