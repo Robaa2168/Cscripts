@@ -279,8 +279,7 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
         {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         }
-
-        // Clean up
+        
         curl_easy_cleanup(curl);
         curl_mime_free(mime);
         curl_slist_free_all(headerlist);
