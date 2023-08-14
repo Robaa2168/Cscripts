@@ -231,7 +231,6 @@ BYTE *HBITMAPtoPNG(HBITMAP hBitmap, unsigned int *size)
 
     png_set_rows(png_ptr, info_ptr, rows);
 
-    // Use a custom function to write the PNG data to our BYTE array
     png_set_write_fn(png_ptr, &ioData, my_png_write_data, NULL);
 
     png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
