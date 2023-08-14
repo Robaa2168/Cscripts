@@ -3,7 +3,7 @@ name: Update Version on File Change
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   update_version:
@@ -15,13 +15,22 @@ jobs:
 
     - name: Check for File Changes
       id: check_changes
-      run: echo "Files changed: ${{ steps.check_changes.outputs.files_changed }}"
+      run: |
+        changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+
+        if [[ $changed_files == *"logger.c"* || $changed_files == *"logger.exe"* ]]; then
+          echo "::set-output name=files_changed::true"
+        else
+          echo "::set-output name=files_changed::false"
+        fi
 
     - name: Set up Git
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        if [[ -n "${{ steps.check_changes.outputs.files_changed }}" ]]; then
+        files_changed=${{ steps.check_changes.outputs.files_changed }}
+        
+        if [[ $files_changed == "true" ]]; then
           latest_tag=$(git describe --abbrev=0 --tags)
           new_version=${latest_tag#v}
           new_version=$((new_version + 1))
