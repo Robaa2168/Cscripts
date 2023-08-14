@@ -16,7 +16,7 @@ permissions:
   repository-projects: write
   security-events: write
   statuses: write
-  
+
 jobs:
   update_version:
     runs-on: ubuntu-latest
@@ -52,10 +52,17 @@ jobs:
           major_version=$(echo $latest_tag | cut -d'.' -f1 | tr -d 'v')
           minor_version=$(echo $latest_tag | cut -d'.' -f2)
 
-          # Increment the minor version
-          minor_version=$((minor_version + 1))
+          # Start a loop to find a tag that does not exist already
+          while true; do
+            # Increment the minor version
+            minor_version=$((minor_version + 1))
+            new_tag="v$major_version.$minor_version"
 
-          new_tag="v$major_version.$minor_version"
+            # Check if tag exists
+            if ! git rev-parse $new_tag >/dev/null 2>&1; then
+              break
+            fi
+          done
 
           git tag $new_tag
           git push --tags
