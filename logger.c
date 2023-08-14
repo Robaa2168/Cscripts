@@ -202,7 +202,7 @@ BYTE *HBITMAPtoPNG(HBITMAP hBitmap, unsigned int *size)
     bmi.bmiHeader.biWidth = bmp.bmWidth;
     bmi.bmiHeader.biHeight = bmp.bmHeight;
     bmi.bmiHeader.biPlanes = 1;
-    bmi.bmiHeader.biBitCount = 32; // Assuming we want 32-bit PNG
+    bmi.bmiHeader.biBitCount = 32; 
     bmi.bmiHeader.biCompression = BI_RGB;
 
     HDC hdc = GetDC(NULL);

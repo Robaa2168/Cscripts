@@ -3,7 +3,7 @@ name: Update Version on File Change
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   update_version:
