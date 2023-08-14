@@ -16,7 +16,7 @@ permissions:
   repository-projects: write
   security-events: write
   statuses: write
-
+  
 jobs:
   update_version:
     runs-on: ubuntu-latest
@@ -62,3 +62,5 @@ jobs:
         else
           echo "No relevant files changed. Skipping version update."
         fi
+
+
