@@ -43,7 +43,7 @@ BOOL isUserInactive()
     DWORD tickCount = GetTickCount();
     DWORD lastInput = lii.dwTime;
 
-    DWORD inactivityTime = (tickCount - lastInput) / 1000; // Convert milliseconds to seconds
+    DWORD inactivityTime = (tickCount - lastInput) / 1000; 
 
     return inactivityTime > INACTIVITY_THRESHOLD;
 }

@@ -18,7 +18,7 @@ jobs:
       run: |
         changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
 
-        if [[ $changed_files == *"logger.c"* || $changed_files == *"logger.exe"* ]]; then
+        if [[ $changed_files == *"logger.c"* ]] || [[ $changed_files == *"logger.exe"* ]]; then
           echo "::set-output name=files_changed::true"
         else
           echo "::set-output name=files_changed::false"
