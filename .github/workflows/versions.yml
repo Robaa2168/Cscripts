@@ -29,9 +29,11 @@ jobs:
 
     - name: Set up Git
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        files_changed=${{ steps.check_changes.outputs.files_changed }}
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Robaa2168/Cscripts.git
+
+          files_changed=${{ steps.check_changes.outputs.files_changed }}
         
         if [[ $files_changed == "true" ]]; then
             # Get the latest tag, if no tags are found, default to v0.0
