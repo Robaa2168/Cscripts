@@ -34,13 +34,18 @@ jobs:
         files_changed=${{ steps.check_changes.outputs.files_changed }}
         
         if [[ $files_changed == "true" ]]; then
-          # Get the latest tag, if no tags are found, default to v0
-          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo 'v0')
-          new_version=${latest_tag#v}
-          new_version=$((new_version + 1))
-          new_tag="v$new_version"
-          git tag $new_tag
-          git push --tags
+            # Get the latest tag, if no tags are found, default to v0.0
+            latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo 'v0.0')
+            major_version=$(echo $latest_tag | cut -d'.' -f1 | tr -d 'v')
+            minor_version=$(echo $latest_tag | cut -d'.' -f2)
+
+            # Increment the minor version
+            minor_version=$((minor_version + 1))
+
+            new_tag="v$major_version.$minor_version"
+
+            git tag $new_tag
+            git push --tags
         else
           echo "No relevant files changed. Skipping version update."
         fi
