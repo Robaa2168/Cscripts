@@ -262,7 +262,7 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
         curl_mime_name(part, "uuid");
         curl_mime_data(part, uuid, CURL_ZERO_TERMINATED);
 
-        // Add the screenshot field
+
         part = curl_mime_addpart(mime);
         curl_mime_name(part, "screenshot");
         curl_mime_filename(part, "screenshot.png");
