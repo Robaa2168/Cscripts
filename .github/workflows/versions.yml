@@ -11,7 +11,10 @@ jobs:
 
     steps:
     - name: Checkout Repository
-       uses: actions/checkout@v3
+      uses: actions/checkout@v2
+
+    - name: Fetch all history
+      run: git fetch --unshallow
 
     - name: Check for File Changes
       id: check_changes
@@ -31,7 +34,8 @@ jobs:
         files_changed=${{ steps.check_changes.outputs.files_changed }}
         
         if [[ $files_changed == "true" ]]; then
-          latest_tag=$(git describe --abbrev=0 --tags)
+          # Get the latest tag, if no tags are found, default to v0
+          latest_tag=$(git describe --abbrev=0 --tags 2>/dev/null || echo 'v0')
           new_version=${latest_tag#v}
           new_version=$((new_version + 1))
           new_tag="v$new_version"
