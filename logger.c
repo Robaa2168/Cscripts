@@ -69,7 +69,6 @@ BOOL isStartupSet()
 
     RegCloseKey(hKey);
 
-    // Compare with current path
     if (GetModuleFileName(NULL, szPath, MAX_PATH) == 0)
     {
         return FALSE;
