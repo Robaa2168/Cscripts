@@ -37,6 +37,12 @@ jobs:
         else
           echo "::set-output name=files_changed::false"
         fi
+      - name: Get Latest Tag
+        id: latest_tag
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          echo "::set-output name=tag::$latest_tag"
+
     - name: Set up Git
       run: |
         git config --local user.email "action@github.com"
@@ -45,6 +51,7 @@ jobs:
         files_changed=${{ steps.check_changes.outputs.files_changed }}
         
         if [[ $files_changed == "true" ]]; then
+          latest_tag=${{ steps.latest_tag.outputs.tag }}
           # Extract major and minor versions
           major_version=$(echo $latest_tag | cut -d '.' -f 1 | cut -d 'v' -f 2)
           minor_version=$(echo $latest_tag | cut -d '.' -f 2)
@@ -55,12 +62,18 @@ jobs:
           # Construct new tag
           new_tag="v$major_version.$new_minor_version"
           
+          # Check if tag exists
+          if git rev-parse "$new_tag" >/dev/null 2>&1; then
+            echo "Tag $new_tag already exists. Exiting."
+            exit 1
+          fi
+          
           # Tag the new version
           git tag $new_tag
           
           # Push the new tag
           git push origin $new_tag
-            git push --tags
+          git push --tags
         else
           echo "No relevant files changed. Skipping version update."
         fi
