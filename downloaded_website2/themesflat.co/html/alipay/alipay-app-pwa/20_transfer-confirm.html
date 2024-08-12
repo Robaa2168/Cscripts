@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- Mobile Specific Metas -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+   <title>
+    transfer
+   </title>
+   <!-- Favicon and Touch Icons  -->
+   <link href="images/logo.png" rel="shortcut icon"/>
+   <link href="images/logo.png" rel="apple-touch-icon-precomposed"/>
+   <!-- Font -->
+   <link href="fonts/fonts.css" rel="stylesheet"/>
+   <!-- Icons -->
+   <link href="fonts/icons-alipay.css" rel="stylesheet"/>
+   <link href="styles/bootstrap.css" rel="stylesheet"/>
+   <link href="styles/styles.css" rel="stylesheet" type="text/css">
+    <link data-pwa-version="set_in_manifest_and_pwa_js" href="_manifest.json" rel="manifest"/>
+    <link href="app/icons/icon-192x192.png" rel="apple-touch-icon" sizes="192x192"/>
+   </link>
+  </meta>
+ </head>
+ <body class="bg_surface_color">
+  <!-- preloade -->
+  <div class="preload preload-container">
+   <div class="preload-logo">
+    <div class="spinner">
+    </div>
+   </div>
+  </div>
+  <!-- /preload -->
+  <div class="app-header st1">
+   <div class="tf-container">
+    <div class="tf-topbar d-flex justify-content-center align-items-center">
+     <a class="back-btn" href="#">
+      <i class="icon-left white_color">
+      </i>
+     </a>
+     <h3 class="white_color">
+      Transfer
+     </h3>
+    </div>
+    <h4 class="text-center white_color fw_4 mt-5">
+     Transfer amount
+    </h4>
+    <h1 class="text-center white_color mt-2">
+     $  1200.0
+    </h1>
+   </div>
+  </div>
+  <div class="card-secton transfer-section">
+   <div class="tf-container">
+    <div class="tf-balance-box transfer-confirm">
+     <div class="top">
+      <p>
+       From
+      </p>
+      <div class="tf-card-block d-flex align-items-center">
+       <div class="logo-img">
+        <img alt="images" src="images/logo-banks/card-visa2.png"/>
+       </div>
+       <div class="info">
+        <h4>
+         <a href="#">
+          Visacard
+         </a>
+        </h4>
+        <p>
+         ****  ****  ****  4234
+        </p>
+       </div>
+      </div>
+     </div>
+     <div class="line">
+     </div>
+     <div class="bottom">
+      <p>
+       To
+      </p>
+      <div class="tf-card-block d-flex align-items-center">
+       <img alt="images" src="images/user/user15.jpg"/>
+       <div class="info">
+        <h4>
+         <a href="#">
+          Themesflat
+         </a>
+        </h4>
+        <p>
+         ****  ****  ****  2424
+        </p>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="transfer-list mt-5">
+   <div class="tf-container">
+    <ul class="list-view">
+     <li>
+      Transaction fee
+      <span>
+       Free
+      </span>
+     </li>
+     <li>
+      Amount in words
+      <span>
+       One thousand two
+       <br/>
+       hundred dollars
+      </span>
+     </li>
+     <li>
+      Transfer form
+      <span>
+       In wallet
+      </span>
+     </li>
+     <li>
+      Message
+      <span>
+       Marverick Nguyen
+       <br/>
+       send loan payment
+      </span>
+     </li>
+    </ul>
+   </div>
+  </div>
+  <div class="bottom-navigation-bar st1 bottom-btn-fixed">
+   <div class="tf-container">
+    <a class="tf-btn accent large" href="#" id="btn-popup-down">
+     Confirm
+    </a>
+   </div>
+  </div>
+  <div class="tf-panel down">
+   <div class="panel_overlay">
+   </div>
+   <div class="panel-box panel-down">
+    <div class="header">
+     <div class="tf-container">
+      <div class="tf-statusbar br-none d-flex justify-content-center align-items-center">
+       <a class="clear-panel" href="#">
+        <i class="icon-close1">
+        </i>
+       </a>
+       <h3>
+        Verification OTP
+       </h3>
+      </div>
+     </div>
+    </div>
+    <div class="mt-5">
+     <div class="tf-container">
+      <form action="22_successful.html" class="tf-form tf-form-verify">
+       <div class="d-flex group-input-verify">
+        <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="1"/>
+        <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="2"/>
+        <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="3"/>
+        <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="4"/>
+       </div>
+       <div class="text-send-code">
+        <p class="fw_4">
+         A code has been sent to your phone
+        </p>
+        <p class="primary_color fw_7">
+         Resend in
+         <span class="js-countdown" data-labels=" :  ,  : , : , " data-timer="60">
+         </span>
+        </p>
+       </div>
+       <div class="mt-7 mb-6">
+        <button class="tf-btn accent large" type="submit">
+         Continue
+        </button>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="javascript/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/bootstrap.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/count-down.js" type="text/javascript">
+  </script>
+  <script src="javascript/verify-input.js" type="text/javascript">
+  </script>
+  <script src="javascript/main.js" type="text/javascript">
+  </script>
+  <script src="javascript/init.js" type="text/javascript">
+  </script>
+ </body>
+</html>

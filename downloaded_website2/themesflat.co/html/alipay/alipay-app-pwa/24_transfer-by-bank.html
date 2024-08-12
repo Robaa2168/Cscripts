@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- Mobile Specific Metas -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+   <title>
+    transfer
+   </title>
+   <!-- Favicon and Touch Icons  -->
+   <link href="images/logo.png" rel="shortcut icon"/>
+   <link href="images/logo.png" rel="apple-touch-icon-precomposed"/>
+   <!-- Font -->
+   <link href="fonts/fonts.css" rel="stylesheet"/>
+   <!-- Icons -->
+   <link href="fonts/icons-alipay.css" rel="stylesheet"/>
+   <link href="styles/bootstrap.css" rel="stylesheet"/>
+   <link href="styles/styles.css" rel="stylesheet" type="text/css">
+    <link data-pwa-version="set_in_manifest_and_pwa_js" href="_manifest.json" rel="manifest"/>
+    <link href="app/icons/icon-192x192.png" rel="apple-touch-icon" sizes="192x192"/>
+   </link>
+  </meta>
+ </head>
+ <body>
+  <!-- preloade -->
+  <div class="preload preload-container">
+   <div class="preload-logo">
+    <div class="spinner">
+    </div>
+   </div>
+  </div>
+  <!-- /preload -->
+  <div class="header">
+   <div class="tf-container">
+    <div class="tf-statusbar d-flex justify-content-center align-items-center">
+     <a class="back-btn" href="#">
+      <i class="icon-left">
+      </i>
+     </a>
+     <h3>
+      Transfer
+     </h3>
+    </div>
+   </div>
+  </div>
+  <div class="content-by-bank mt-3">
+   <div class="tf-container">
+    <div class="heading">
+     <h3 class="d-flex justify-content-between fw_6">
+      Transfer To
+      <a href="#">
+       Scan QR
+       <i class="icon-right">
+       </i>
+      </a>
+     </h3>
+     <div class="tf-spacing-12">
+     </div>
+    </div>
+    <form action="25_payment-source.html" class="tf-form mt-3">
+     <div class="group-input">
+      <label for="">
+       Bank
+      </label>
+      <div class="box-custom-select">
+       <select class="default-select">
+        <option class="item" data-thumbnail="images/logo-banks/bank1.png">
+         Visa
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank2.png">
+         Techcombank
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank3.png">
+         ACB
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank4.png">
+         Five star bank
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank5.png">
+         Citibank
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank6.png">
+         ICBCbank
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank7.png">
+         Chasebank
+        </option>
+        <option class="item" data-thumbnail="images/logo-banks/bank8.png">
+         Vietinbank
+        </option>
+       </select>
+       <div class="lang-select">
+        <ul class="btn-select" value="">
+        </ul>
+        <i class="icon-down">
+        </i>
+       </div>
+       <div class="banks-select">
+        <ul id="box-select">
+        </ul>
+       </div>
+      </div>
+     </div>
+     <div class="group-input">
+      <label for="">
+       Account Number
+      </label>
+      <input placeholder="1234 0000 2134 3243" type="text" value="1234 0000 2134 3243"/>
+      <div class="credit-card">
+       <span>
+        Saved Number
+       </span>
+       <i class="icon-bankgroup">
+       </i>
+      </div>
+     </div>
+     <div class="group-input">
+      <label for="">
+       Account Name
+      </label>
+      <input type="text" value="Themesflat"/>
+     </div>
+     <div class="group-input input-field input-money">
+      <label for="">
+       Amout Of Money
+      </label>
+      <input class="search-field value_input st1" required="" type="text" value="$ 5"/>
+      <span class="icon-clear">
+      </span>
+      <div class="money">
+       <a class="tag-money" href="#">
+        $ 50
+       </a>
+       <a class="tag-money" href="#">
+        $ 100
+       </a>
+       <a class="tag-money" href="#">
+        $ 150
+       </a>
+      </div>
+     </div>
+     <div class="group-input">
+      <label for="">
+       Message
+      </label>
+      <input type="text" value="Loan payment"/>
+      <div class="tf-spacing-12">
+      </div>
+      <div class="group-checkbox">
+       <input checked="" class="tf-checkbox st1" type="checkbox"/>
+       <span class="fw_3">
+        Save this account number to transfer money later
+       </span>
+      </div>
+     </div>
+     <div class="bottom-navigation-bar bottom-btn-fixed st2">
+      <button class="tf-btn accent large" type="submit">
+       Continue
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <script src="javascript/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/bootstrap.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/main.js" type="text/javascript">
+  </script>
+ </body>
+</html>

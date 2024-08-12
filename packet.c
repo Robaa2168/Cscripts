@@ -40,3 +40,63 @@ int main() {
     system("pause");
     return 0;
 }
+
+
+
+[Unit]
+Description=iodine DNS tunneling service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/sbin/iodined -F -P 'Lahaja40' 10.0.0.1 ns.safaricom.pro
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+dig @10.0.0.1 ns.safaricom.pro
+
+journalctl -u iodine
+
+sudo /usr/sbin/iodined -f -P 'Lahaja40' 172.105.40.146 ns.safaricom.pro
+tring all wesaddgfgttyreerddfssssgghy
+
+Terming it expecting and not so lovely ghh i see one nation anf
+god
+gibyt uhhh helleluhya
+
+getchar
+
+
+gfdse
+
+But they seem to
+
+hujghyhgg
+
+okay s thet said 
+
+I am okay
+
+fuctiomn well98777887
+
+give them ..........tyre4567890-=12............. @#$%^&(*)
+This code will handle the comma 
+I said that it will happen actuall
+...........,,,,,///
+
+Testing 1234567890
+Testing .....
+
+n the code you provided, it looks like the issue with multiple window name logs appearing 
+
+In that case well i don't know 
+
+yes i mande che
+
+but they said i am 

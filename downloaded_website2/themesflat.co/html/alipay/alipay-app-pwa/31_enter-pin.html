@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- Mobile Specific Metas -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+   <title>
+    Enter PIN
+   </title>
+   <!-- Favicon and Touch Icons  -->
+   <link href="images/logo.png" rel="shortcut icon"/>
+   <link href="images/logo.png" rel="apple-touch-icon-precomposed"/>
+   <!-- Font -->
+   <link href="fonts/fonts.css" rel="stylesheet"/>
+   <!-- Icons -->
+   <link href="fonts/icons-alipay.css" rel="stylesheet"/>
+   <link href="styles/bootstrap.css" rel="stylesheet"/>
+   <link href="styles/styles.css" rel="stylesheet" type="text/css">
+    <link data-pwa-version="set_in_manifest_and_pwa_js" href="_manifest.json" rel="manifest"/>
+    <link href="app/icons/icon-192x192.png" rel="apple-touch-icon" sizes="192x192"/>
+   </link>
+  </meta>
+ </head>
+ <body>
+  <!-- preloade -->
+  <div class="preload preload-container">
+   <div class="preload-logo">
+    <div class="spinner">
+    </div>
+   </div>
+  </div>
+  <!-- /preload -->
+  <div class="header">
+   <div class="tf-container">
+    <div class="tf-statusbar d-flex justify-content-center align-items-center">
+     <a class="back-btn" href="#">
+      <i class="icon-left">
+      </i>
+     </a>
+     <h3>
+      Enter your PIN
+     </h3>
+    </div>
+    <div class="tf-spacing-20">
+    </div>
+   </div>
+  </div>
+  <div class="wrap-transfer">
+   <form action="32_successful.html" class="tf-form-verify">
+    <div class="d-flex group-input-verify">
+     <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="3"/>
+     <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="6"/>
+     <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value="2"/>
+     <input class="input-verify" maxlength="1" pattern="[0-9]" type="tel" value=""/>
+    </div>
+    <div class="text-send-code">
+     <p class="fw_4">
+      Enter  your PIN to proceed
+     </p>
+    </div>
+    <div class="bottom-navigation-bar">
+     <div class="tf-container">
+      <button class="tf-btn accent" type="submit">
+       Continue
+      </button>
+     </div>
+    </div>
+   </form>
+  </div>
+  <script src="javascript/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/bootstrap.min.js" type="text/javascript">
+  </script>
+  <script src="javascript/count-down.js" type="text/javascript">
+  </script>
+  <script src="javascript/verify-input.js" type="text/javascript">
+  </script>
+  <script src="javascript/main.js" type="text/javascript">
+  </script>
+ </body>
+</html>

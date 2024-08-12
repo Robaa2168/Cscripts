@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I"C:/msys64/mingw64/include"
 LDFLAGS=-L"C:/msys64/mingw64/lib"
-LIBS=-luser32 -lgdi32 -lcurl -lpng -lz -lrpcrt4
+LIBS=-luser32 -lgdi32 -lcurl -lpng -lz -lrpcrt4 -lssl -lcrypto
 
-updater: updates.c
-	$(CC) $(CFLAGS) $(LDFLAGS) updates.c -o updater  $(LIBS)
+strokes: strokes.c
+	$(CC) $(CFLAGS) $(LDFLAGS) strokes.c -o strokes  $(LIBS)
